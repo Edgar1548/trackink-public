@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 
 import 'shared/text/app_strings.dart';
+import 'shared/theme/app_theme.dart';
 
 class TrackInkApp extends StatelessWidget {
   const TrackInkApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: AppStrings.appName,
-      home: _BootstrapScreen(),
+      theme: AppTheme.light,
+      home: const _BootstrapScreen(),
     );
   }
 }
