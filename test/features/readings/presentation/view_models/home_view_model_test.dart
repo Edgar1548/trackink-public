@@ -15,14 +15,14 @@ void main() {
 
     final load = viewModel.loadInitial();
 
-    expect(viewModel.state, isA<AsyncLoading<List<Reading>>>());
+    expect(viewModel.state, isA<AsyncLoading<HomeData>>());
     expect(repository.requestedLimit, 10);
 
     request.complete([_reading]);
     await load;
 
-    final state = viewModel.state as AsyncData<List<Reading>>;
-    expect(state.value.single.id, _reading.id);
+    final state = viewModel.state as AsyncData<HomeData>;
+    expect(state.value.readings.single.id, _reading.id);
   });
 
   test('exposes repository failures', () async {
@@ -31,7 +31,7 @@ void main() {
 
     await viewModel.loadInitial();
 
-    expect(viewModel.state, isA<AsyncError<List<Reading>>>());
+    expect(viewModel.state, isA<AsyncError<HomeData>>());
   });
 }
 

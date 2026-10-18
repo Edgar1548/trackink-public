@@ -1,17 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:trackink/src/features/readings/domain/entities/reading.dart';
+import 'package:trackink/src/features/readings/domain/entities/reading_stats.dart';
+import 'package:trackink/src/features/readings/domain/repositories/reading_repository.dart';
 import 'package:trackink/src/features/readings/presentation/screens/home_screen.dart';
+import 'package:trackink/src/features/readings/presentation/view_models/home_view_model.dart';
 import 'package:trackink/src/shared/text/app_strings.dart';
 
 void main() {
   testWidgets('provides the visual structure for the reading list', (
     tester,
   ) async {
-    await tester.pumpWidget(const MaterialApp(home: HomeScreen()));
+    final viewModel = HomeViewModel(_EmptyReadingRepository());
+    addTearDown(viewModel.dispose);
+
+    await tester.pumpWidget(MaterialApp(home: HomeScreen(viewModel: viewModel)));
+    await tester.pump();
 
     expect(find.byType(Scaffold), findsOneWidget);
     expect(find.byType(SafeArea), findsOneWidget);
     expect(find.text(AppStrings.appName), findsOneWidget);
     expect(find.byKey(HomeScreen.contentKey), findsOneWidget);
   });
+}
+
+final class _EmptyReadingRepository implements ReadingRepository {
+  @override
+  Future<List<Reading>> getFirstPage({required int limit}) async => const [];
+
+  @override
+  Future<ReadingStats> getStats() async {
+    return const ReadingStats(
+      totalReadings: 0,
+      completedReadings: 0,
+      totalProgress: 0,
+    );
+  }
 }
