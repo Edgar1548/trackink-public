@@ -8,10 +8,10 @@ void main() {
     await tester.pumpWidget(const TrackInkApp());
 
     expect(find.text('TrackInk'), findsOneWidget);
-    expect(
-      tester.widget<MaterialApp>(find.byType(MaterialApp)).theme?.fontFamily,
-      AppFonts.sans,
-    );
+    final theme = tester.widget<MaterialApp>(find.byType(MaterialApp)).theme!;
+
+    expect(theme.textTheme.bodyMedium?.fontFamily, AppFonts.sans);
+    expect(theme.textTheme.headlineSmall?.fontFamily, AppFonts.serif);
     expect(
       tester.widget<Scaffold>(find.byType(Scaffold)).backgroundColor,
       null,
