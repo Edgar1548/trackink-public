@@ -11,6 +11,7 @@ import '../widgets/reading_empty_state.dart';
 import '../widgets/reading_stats_summary.dart';
 
 const _loadMoreThreshold = 160.0;
+const _loadMoreIndicatorKey = Key('home-load-more-indicator');
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.viewModel});
@@ -119,11 +120,24 @@ class _HomeDataView extends StatelessWidget {
                       AppSpacing.large,
                       AppSpacing.large,
                     ),
-                    itemCount: data.readings.length,
-                    itemBuilder: (context, index) => ReadingCard(
-                      reading: data.readings[index],
-                      onTap: () {},
-                    ),
+                    itemCount:
+                        data.readings.length + (data.isLoadingMore ? 1 : 0),
+                    itemBuilder: (context, index) {
+                      if (index == data.readings.length) {
+                        return const Padding(
+                          key: _loadMoreIndicatorKey,
+                          padding: EdgeInsets.symmetric(
+                            vertical: AppSpacing.medium,
+                          ),
+                          child: Center(child: AppLoadingIndicator()),
+                        );
+                      }
+
+                      return ReadingCard(
+                        reading: data.readings[index],
+                        onTap: () {},
+                      );
+                    },
                     separatorBuilder: (_, _) =>
                         const SizedBox(height: AppSpacing.medium),
                   ),
