@@ -45,6 +45,24 @@ class ReadingDao extends DatabaseAccessor<AppDatabase> {
   }
 
   Future<List<ReadingWithTags>> getFirstPage({required int limit}) async {
+    return _getPage(limit: limit, offset: 0);
+  }
+
+  Future<List<ReadingWithTags>> getNextPage({
+    required int limit,
+    required int offset,
+  }) {
+    if (offset < 0) {
+      throw ArgumentError.value(offset, 'offset', 'Must not be negative');
+    }
+
+    return _getPage(limit: limit, offset: offset);
+  }
+
+  Future<List<ReadingWithTags>> _getPage({
+    required int limit,
+    required int offset,
+  }) async {
     if (limit <= 0) {
       throw ArgumentError.value(limit, 'limit', 'Must be greater than zero');
     }
@@ -54,7 +72,7 @@ class ReadingDao extends DatabaseAccessor<AppDatabase> {
             (reading) => OrderingTerm.desc(reading.updatedAt),
             (reading) => OrderingTerm.asc(reading.id),
           ])
-          ..limit(limit))
+          ..limit(limit, offset: offset))
         .get();
 
     if (readingRows.isEmpty) return const [];
