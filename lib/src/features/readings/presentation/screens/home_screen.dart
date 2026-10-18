@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../shared/text/app_strings.dart';
 import '../../../../shared/theme/app_tokens.dart';
+import '../widgets/reading_empty_state.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -22,7 +23,10 @@ class HomeScreen extends StatelessWidget {
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
             ),
-            const Expanded(child: SizedBox(key: contentKey)),
+            const Expanded(
+              key: contentKey,
+              child: ReadingEmptyState(),
+            ),
           ],
         ),
       ),
