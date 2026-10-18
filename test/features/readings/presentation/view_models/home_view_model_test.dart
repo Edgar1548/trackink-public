@@ -66,6 +66,12 @@ final class _FakeReadingRepository implements ReadingRepository {
   }
 
   @override
+  Future<List<Reading>> getNextPage({
+    required int limit,
+    required int offset,
+  }) async => const [];
+
+  @override
   Future<List<Reading>> getFirstPage({required int limit}) {
     requestedLimit = limit;
     return response;

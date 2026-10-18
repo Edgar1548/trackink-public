@@ -36,6 +36,12 @@ final class _EmptyReadingRepository implements ReadingRepository {
   Future<List<Reading>> getFirstPage({required int limit}) async => const [];
 
   @override
+  Future<List<Reading>> getNextPage({
+    required int limit,
+    required int offset,
+  }) async => const [];
+
+  @override
   Future<ReadingStats> getStats() async {
     return const ReadingStats(
       totalReadings: 0,

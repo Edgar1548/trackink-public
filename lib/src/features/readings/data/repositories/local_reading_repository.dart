@@ -22,7 +22,19 @@ final class LocalReadingRepository implements ReadingRepository {
   @override
   Future<List<Reading>> getFirstPage({required int limit}) async {
     final rows = await _dao.getFirstPage(limit: limit);
+    return _mapRows(rows);
+  }
 
+  @override
+  Future<List<Reading>> getNextPage({
+    required int limit,
+    required int offset,
+  }) async {
+    final rows = await _dao.getNextPage(limit: limit, offset: offset);
+    return _mapRows(rows);
+  }
+
+  List<Reading> _mapRows(List<ReadingWithTags> rows) {
     return rows
         .map(
           (result) => mapReadingRowToDomain(result.reading, result.tags),
