@@ -10,6 +10,8 @@ import '../widgets/reading_card.dart';
 import '../widgets/reading_empty_state.dart';
 import '../widgets/reading_stats_summary.dart';
 
+const _loadMoreThreshold = 160.0;
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.viewModel});
 
@@ -79,15 +81,19 @@ class _HomeScreenState extends State<HomeScreen> {
         message: AppStrings.loadReadingsError,
         onRetry: widget.viewModel.loadInitial,
       ),
-      AsyncData<HomeData>(:final value) => _HomeDataView(data: value),
+      AsyncData<HomeData>(:final value) => _HomeDataView(
+        data: value,
+        onLoadMore: widget.viewModel.loadMore,
+      ),
     };
   }
 }
 
 class _HomeDataView extends StatelessWidget {
-  const _HomeDataView({required this.data});
+  const _HomeDataView({required this.data, required this.onLoadMore});
 
   final HomeData data;
+  final VoidCallback onLoadMore;
 
   @override
   Widget build(BuildContext context) {
@@ -98,20 +104,29 @@ class _HomeDataView extends StatelessWidget {
         Expanded(
           child: data.readings.isEmpty
               ? const ReadingEmptyState()
-              : ListView.separated(
-                  padding: const EdgeInsets.fromLTRB(
-                    AppSpacing.large,
-                    0,
-                    AppSpacing.large,
-                    AppSpacing.large,
+              : NotificationListener<ScrollUpdateNotification>(
+                  onNotification: (notification) {
+                    if (notification.metrics.extentAfter <=
+                        _loadMoreThreshold) {
+                      onLoadMore();
+                    }
+                    return false;
+                  },
+                  child: ListView.separated(
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSpacing.large,
+                      0,
+                      AppSpacing.large,
+                      AppSpacing.large,
+                    ),
+                    itemCount: data.readings.length,
+                    itemBuilder: (context, index) => ReadingCard(
+                      reading: data.readings[index],
+                      onTap: () {},
+                    ),
+                    separatorBuilder: (_, _) =>
+                        const SizedBox(height: AppSpacing.medium),
                   ),
-                  itemCount: data.readings.length,
-                  itemBuilder: (context, index) => ReadingCard(
-                    reading: data.readings[index],
-                    onTap: () {},
-                  ),
-                  separatorBuilder: (_, _) =>
-                      const SizedBox(height: AppSpacing.medium),
                 ),
         ),
       ],
