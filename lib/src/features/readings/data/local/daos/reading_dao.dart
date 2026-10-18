@@ -9,8 +9,40 @@ class ReadingWithTags {
   final List<TagRow> tags;
 }
 
+class ReadingStatsRow {
+  const ReadingStatsRow({
+    required this.totalReadings,
+    required this.completedReadings,
+    required this.totalProgress,
+  });
+
+  final int totalReadings;
+  final int completedReadings;
+  final int totalProgress;
+}
+
 class ReadingDao extends DatabaseAccessor<AppDatabase> {
   ReadingDao(super.attachedDatabase);
+
+  Future<ReadingStatsRow> getStats() async {
+    final result = await customSelect(
+      '''
+        SELECT
+          COUNT(*) AS total_readings,
+          COALESCE(SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END), 0)
+            AS completed_readings,
+          COALESCE(SUM(progress), 0) AS total_progress
+        FROM readings
+      ''',
+      readsFrom: {attachedDatabase.readings},
+    ).getSingle();
+
+    return ReadingStatsRow(
+      totalReadings: result.read<int>('total_readings'),
+      completedReadings: result.read<int>('completed_readings'),
+      totalProgress: result.read<int>('total_progress'),
+    );
+  }
 
   Future<List<ReadingWithTags>> getFirstPage({required int limit}) async {
     if (limit <= 0) {

@@ -42,19 +42,45 @@ void main() {
   test('rejects a non-positive page limit', () async {
     await expectLater(dao.getFirstPage(limit: 0), throwsArgumentError);
   });
+
+  test('aggregates total, completed, and progress statistics', () async {
+    final timestamp = DateTime.utc(2026, 1, 1);
+    await _insertReading(
+      database,
+      id: 'completed',
+      updatedAt: timestamp,
+      status: 'completed',
+      progress: 12,
+    );
+    await _insertReading(
+      database,
+      id: 'in-progress',
+      updatedAt: timestamp,
+      progress: 5,
+    );
+
+    final stats = await dao.getStats();
+
+    expect(stats.totalReadings, 2);
+    expect(stats.completedReadings, 1);
+    expect(stats.totalProgress, 17);
+  });
 }
 
 Future<void> _insertReading(
   AppDatabase database, {
   required String id,
   required DateTime updatedAt,
+  String status = 'inProgress',
+  int progress = 0,
 }) async {
   await database.into(database.readings).insert(
     ReadingsCompanion.insert(
       id: id,
       title: id,
       type: 'manga',
-      status: 'inProgress',
+      status: status,
+      progress: Value(progress),
       alternativeTitles: const Value('[]'),
       createdAt: updatedAt,
       updatedAt: updatedAt,

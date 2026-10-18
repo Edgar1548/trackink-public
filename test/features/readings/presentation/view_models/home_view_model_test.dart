@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:trackink/src/core/state/async_state.dart';
 import 'package:trackink/src/features/readings/domain/entities/reading.dart';
+import 'package:trackink/src/features/readings/domain/entities/reading_stats.dart';
 import 'package:trackink/src/features/readings/domain/repositories/reading_repository.dart';
 import 'package:trackink/src/features/readings/presentation/view_models/home_view_model.dart';
 
@@ -54,6 +55,15 @@ final class _FakeReadingRepository implements ReadingRepository {
 
   final Future<List<Reading>> response;
   int? requestedLimit;
+
+  @override
+  Future<ReadingStats> getStats() async {
+    return const ReadingStats(
+      totalReadings: 0,
+      completedReadings: 0,
+      totalProgress: 0,
+    );
+  }
 
   @override
   Future<List<Reading>> getFirstPage({required int limit}) {
