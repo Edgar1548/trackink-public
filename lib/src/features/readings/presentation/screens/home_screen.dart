@@ -9,6 +9,7 @@ import '../view_models/home_view_model.dart';
 import '../widgets/reading_card.dart';
 import '../widgets/reading_empty_state.dart';
 import '../widgets/reading_stats_summary.dart';
+import 'temporary_create_reading_screen.dart';
 
 const _loadMoreThreshold = 160.0;
 const _loadMoreIndicatorKey = Key('home-load-more-indicator');
@@ -19,6 +20,7 @@ class HomeScreen extends StatefulWidget {
   final HomeViewModel viewModel;
 
   static const contentKey = Key('home-content');
+  static const createButtonKey = Key('create-reading-button');
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -54,6 +56,14 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        key: HomeScreen.createButtonKey,
+        tooltip: AppStrings.addReading,
+        backgroundColor: AppPalette.terracotta,
+        foregroundColor: AppPalette.white,
+        onPressed: _openCreateReading,
+        child: const Icon(Icons.add),
+      ),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,6 +81,14 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  void _openCreateReading() {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => const TemporaryCreateReadingScreen(),
       ),
     );
   }

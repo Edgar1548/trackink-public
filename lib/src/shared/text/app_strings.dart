@@ -10,6 +10,8 @@ abstract final class AppStrings {
   static const loadReadingsError = 'Could not load your readings.';
   static const retry = 'Retry';
   static const addReading = 'Add reading';
+  static const createReading = 'New reading';
+  static const createReadingComingSoon = 'The reading form is coming next.';
   static const loading = 'Loading';
   static const statusInProgress = 'Reading';
   static const statusCompleted = 'Completed';

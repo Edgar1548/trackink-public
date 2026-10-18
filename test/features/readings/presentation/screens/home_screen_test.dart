@@ -22,6 +22,20 @@ void main() {
     expect(find.text(AppStrings.appName), findsOneWidget);
     expect(find.byKey(HomeScreen.contentKey), findsOneWidget);
   });
+
+  testWidgets('opens the temporary create-reading route', (tester) async {
+    final viewModel = HomeViewModel(_EmptyReadingRepository());
+    addTearDown(viewModel.dispose);
+
+    await tester.pumpWidget(MaterialApp(home: HomeScreen(viewModel: viewModel)));
+    await tester.pump();
+
+    await tester.tap(find.byKey(HomeScreen.createButtonKey));
+    await tester.pumpAndSettle();
+
+    expect(find.text(AppStrings.createReading), findsOneWidget);
+    expect(find.text(AppStrings.createReadingComingSoon), findsOneWidget);
+  });
 }
 
 final class _EmptyReadingRepository implements ReadingRepository {
