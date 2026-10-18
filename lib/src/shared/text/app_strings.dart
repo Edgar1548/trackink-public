@@ -11,4 +11,10 @@ abstract final class AppStrings {
   static const retry = 'Retry';
   static const addReading = 'Add reading';
   static const loading = 'Loading';
+  static const statusInProgress = 'Reading';
+  static const statusCompleted = 'Completed';
+  static const statusHiatus = 'Hiatus';
+  static const statusNoTranslation = 'No translation';
+  static const statusDropped = 'Dropped';
+  static const statusPlanned = 'Plan to read';
 }

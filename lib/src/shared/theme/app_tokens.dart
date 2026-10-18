@@ -17,6 +17,9 @@ abstract final class AppPalette {
   static const warningSubtle = Color(0xFFFEF6E4);
   static const danger = Color(0xFFA8281A);
   static const dangerSubtle = Color(0xFFFAEEEC);
+  static const card = Colors.white;
+  static const tagBackground = Color(0xFFFDECD8);
+  static const mutedStatusBackground = Color(0xFFE8DDD4);
   static const white = Colors.white;
 }
 
@@ -25,4 +28,10 @@ abstract final class AppSpacing {
   static const small = 8.0;
   static const medium = 12.0;
   static const large = 16.0;
+}
+
+abstract final class AppRadius {
+  static const small = 6.0;
+  static const medium = 12.0;
+  static const large = 14.0;
 }
