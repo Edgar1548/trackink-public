@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'features/readings/presentation/screens/home_screen.dart';
 import 'shared/text/app_strings.dart';
 import 'shared/theme/app_theme.dart';
 
@@ -12,16 +13,7 @@ class TrackInkApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: AppStrings.appName,
       theme: AppTheme.light,
-      home: const _BootstrapScreen(),
+      home: const HomeScreen(),
     );
-  }
-}
-
-class _BootstrapScreen extends StatelessWidget {
-  const _BootstrapScreen();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(body: Center(child: Text(AppStrings.appName)));
   }
 }
