@@ -11,6 +11,14 @@ abstract final class AppStrings {
   static const retry = 'Retry';
   static const addReading = 'Add reading';
   static const createReading = 'New reading';
+  static const title = 'Title';
+  static const author = 'Author';
+  static const progress = 'Progress';
+  static const tags = 'Tags';
+  static const tagsHint = 'Separate tags with commas';
+  static const description = 'Description';
+  static const alternativeTitles = 'Alternative titles';
+  static const alternativeTitlesHint = 'Separate titles with commas';
   static const loading = 'Loading';
   static const statusInProgress = 'Reading';
   static const statusCompleted = 'Completed';
