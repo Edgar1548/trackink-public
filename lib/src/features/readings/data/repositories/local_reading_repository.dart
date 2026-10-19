@@ -26,6 +26,11 @@ final class LocalReadingRepository implements ReadingRepository, ReadingCreator 
   @override
   Future<Reading> create(ReadingDraft draft) async {
     final now = _currentTime();
+    final normalizedTags = draft.tags
+        .map((tag) => tag.trim())
+        .where((tag) => tag.isNotEmpty)
+        .toSet()
+        .toList(growable: false);
     final reading = Reading(
       id: _idGenerator(),
       title: draft.title,
@@ -34,7 +39,7 @@ final class LocalReadingRepository implements ReadingRepository, ReadingCreator 
       status: draft.status,
       progress: draft.progress,
       score: draft.score,
-      tags: List.unmodifiable(draft.tags),
+      tags: normalizedTags,
       description: draft.description,
       alternativeTitles: List.unmodifiable(draft.alternativeTitles),
       createdAt: now,
