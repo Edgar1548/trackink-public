@@ -4,6 +4,7 @@ import 'package:trackink/src/features/readings/domain/entities/reading.dart';
 import 'package:trackink/src/features/readings/domain/entities/reading_stats.dart';
 import 'package:trackink/src/features/readings/domain/repositories/reading_repository.dart';
 import 'package:trackink/src/features/readings/presentation/screens/home_screen.dart';
+import 'package:trackink/src/features/readings/presentation/screens/reading_form_screen.dart';
 import 'package:trackink/src/features/readings/presentation/view_models/home_view_model.dart';
 import 'package:trackink/src/shared/text/app_strings.dart';
 
@@ -23,7 +24,7 @@ void main() {
     expect(find.byKey(HomeScreen.contentKey), findsOneWidget);
   });
 
-  testWidgets('opens the temporary create-reading route', (tester) async {
+  testWidgets('opens the create-reading form route', (tester) async {
     final viewModel = HomeViewModel(_EmptyReadingRepository());
     addTearDown(viewModel.dispose);
 
@@ -33,8 +34,9 @@ void main() {
     await tester.tap(find.byKey(HomeScreen.createButtonKey));
     await tester.pumpAndSettle();
 
+    expect(find.byType(ReadingFormScreen), findsOneWidget);
     expect(find.text(AppStrings.createReading), findsOneWidget);
-    expect(find.text(AppStrings.createReadingComingSoon), findsOneWidget);
+    expect(find.byKey(ReadingFormScreen.contentKey), findsOneWidget);
   });
 }
 

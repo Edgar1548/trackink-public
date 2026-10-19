@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 
 import '../../../../shared/text/app_strings.dart';
 
-class TemporaryCreateReadingScreen extends StatelessWidget {
-  const TemporaryCreateReadingScreen({super.key});
+class ReadingFormScreen extends StatelessWidget {
+  const ReadingFormScreen({super.key});
+
+  static const contentKey = Key('reading-form-content');
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text(AppStrings.createReading)),
-      body: const Center(child: Text(AppStrings.createReadingComingSoon)),
+      body: const SafeArea(child: SizedBox.expand(key: contentKey)),
     );
   }
 }

@@ -9,7 +9,7 @@ import '../view_models/home_view_model.dart';
 import '../widgets/reading_card.dart';
 import '../widgets/reading_empty_state.dart';
 import '../widgets/reading_stats_summary.dart';
-import 'temporary_create_reading_screen.dart';
+import 'reading_form_screen.dart';
 
 const _loadMoreThreshold = 160.0;
 const _loadMoreIndicatorKey = Key('home-load-more-indicator');
@@ -88,7 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _openCreateReading() {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
-        builder: (_) => const TemporaryCreateReadingScreen(),
+        builder: (_) => const ReadingFormScreen(),
       ),
     );
   }
