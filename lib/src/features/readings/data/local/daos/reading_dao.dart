@@ -24,6 +24,42 @@ class ReadingStatsRow {
 class ReadingDao extends DatabaseAccessor<AppDatabase> {
   ReadingDao(super.attachedDatabase);
 
+  Future<void> insertReading({
+    required ReadingsCompanion reading,
+    required Iterable<String> tagNames,
+  }) async {
+    if (!reading.id.present) {
+      throw ArgumentError('The reading ID is required');
+    }
+
+    final readingId = reading.id.value;
+    final normalizedTags = tagNames
+        .map((tag) => tag.trim())
+        .where((tag) => tag.isNotEmpty)
+        .toSet();
+
+    await attachedDatabase.transaction(() async {
+      await into(attachedDatabase.readings).insert(reading);
+
+      for (final tagName in normalizedTags) {
+        await into(attachedDatabase.tags).insert(
+          TagsCompanion.insert(name: tagName),
+          mode: InsertMode.insertOrIgnore,
+        );
+        final tag = await (select(attachedDatabase.tags)
+              ..where((row) => row.name.equals(tagName)))
+            .getSingle();
+        await into(attachedDatabase.readingTags).insert(
+          ReadingTagsCompanion.insert(
+            readingId: readingId,
+            tagId: tag.id,
+          ),
+          mode: InsertMode.insertOrIgnore,
+        );
+      }
+    });
+  }
+
   Future<ReadingStatsRow> getStats() async {
     final result = await customSelect(
       '''
