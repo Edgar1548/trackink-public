@@ -7,6 +7,7 @@ import '../../../../shared/widgets/app_option_selector.dart';
 import '../../../../shared/widgets/app_score_selector.dart';
 import '../../../../shared/widgets/app_text_field.dart';
 import '../../domain/entities/reading.dart';
+import '../view_models/reading_form_view_model.dart';
 
 const _typeOptions = [
   AppOption(label: AppStrings.typeManga, value: ReadingType.manga),
@@ -37,7 +38,9 @@ const _statusOptions = [
 ];
 
 class ReadingFormScreen extends StatefulWidget {
-  const ReadingFormScreen({super.key});
+  const ReadingFormScreen({super.key, this.viewModel});
+
+  final ReadingFormViewModel? viewModel;
 
   static const contentKey = Key('reading-form-content');
 
@@ -46,24 +49,26 @@ class ReadingFormScreen extends StatefulWidget {
 }
 
 class _ReadingFormScreenState extends State<ReadingFormScreen> {
-  final titleController = TextEditingController();
-  final authorController = TextEditingController();
-  final progressController = TextEditingController();
-  final tagsController = TextEditingController();
-  final descriptionController = TextEditingController();
-  final alternativeTitlesController = TextEditingController();
-  ReadingType type = ReadingType.manga;
-  ReadingStatus status = ReadingStatus.inProgress;
-  double? score;
+  late final ReadingFormViewModel viewModel;
+  late final bool ownsViewModel;
+
+  @override
+  void initState() {
+    super.initState();
+    final injected = widget.viewModel;
+    viewModel = injected ?? ReadingFormViewModel();
+    ownsViewModel = injected == null;
+    viewModel.addListener(_onViewModelChanged);
+  }
+
+  void _onViewModelChanged() {
+    if (mounted) setState(() {});
+  }
 
   @override
   void dispose() {
-    titleController.dispose();
-    authorController.dispose();
-    progressController.dispose();
-    tagsController.dispose();
-    descriptionController.dispose();
-    alternativeTitlesController.dispose();
+    viewModel.removeListener(_onViewModelChanged);
+    if (ownsViewModel) viewModel.dispose();
     super.dispose();
   }
 
@@ -77,17 +82,17 @@ class _ReadingFormScreenState extends State<ReadingFormScreen> {
           padding: const EdgeInsets.all(AppSpacing.large),
           children: [
             AppTextField(
-              controller: titleController,
+              controller: viewModel.titleController,
               label: AppStrings.title,
             ),
             const SizedBox(height: AppSpacing.medium),
             AppTextField(
-              controller: authorController,
+              controller: viewModel.authorController,
               label: AppStrings.author,
             ),
             const SizedBox(height: AppSpacing.medium),
             AppTextField(
-              controller: progressController,
+              controller: viewModel.progressController,
               label: AppStrings.progress,
               keyboardType: TextInputType.number,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -99,9 +104,9 @@ class _ReadingFormScreenState extends State<ReadingFormScreen> {
             ),
             const SizedBox(height: AppSpacing.small),
             AppOptionSelector<ReadingType>(
-              value: type,
+              value: viewModel.type,
               options: _typeOptions,
-              onChanged: (value) => setState(() => type = value),
+              onChanged: viewModel.setType,
             ),
             const SizedBox(height: AppSpacing.medium),
             Text(
@@ -110,9 +115,9 @@ class _ReadingFormScreenState extends State<ReadingFormScreen> {
             ),
             const SizedBox(height: AppSpacing.small),
             AppOptionSelector<ReadingStatus>(
-              value: status,
+              value: viewModel.status,
               options: _statusOptions,
-              onChanged: (value) => setState(() => status = value),
+              onChanged: viewModel.setStatus,
             ),
             const SizedBox(height: AppSpacing.medium),
             Text(
@@ -121,25 +126,25 @@ class _ReadingFormScreenState extends State<ReadingFormScreen> {
             ),
             const SizedBox(height: AppSpacing.small),
             AppScoreSelector(
-              value: score,
-              onChanged: (value) => setState(() => score = value),
+              value: viewModel.score,
+              onChanged: viewModel.setScore,
             ),
             const SizedBox(height: AppSpacing.medium),
             AppTextField(
-              controller: tagsController,
+              controller: viewModel.tagsController,
               label: AppStrings.tags,
               hint: AppStrings.tagsHint,
             ),
             const SizedBox(height: AppSpacing.medium),
             AppTextField(
-              controller: descriptionController,
+              controller: viewModel.descriptionController,
               label: AppStrings.description,
               maxLines: 4,
               keyboardType: TextInputType.multiline,
             ),
             const SizedBox(height: AppSpacing.medium),
             AppTextField(
-              controller: alternativeTitlesController,
+              controller: viewModel.alternativeTitlesController,
               label: AppStrings.alternativeTitles,
               hint: AppStrings.alternativeTitlesHint,
             ),
