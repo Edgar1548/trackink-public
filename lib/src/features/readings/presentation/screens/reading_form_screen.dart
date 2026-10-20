@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import '../../../../shared/text/app_strings.dart';
 import '../../../../shared/theme/app_tokens.dart';
 import '../../../../shared/widgets/app_option_selector.dart';
+import '../../../../shared/widgets/app_score_selector.dart';
 import '../../../../shared/widgets/app_text_field.dart';
 import '../../domain/entities/reading.dart';
 
@@ -53,6 +54,7 @@ class _ReadingFormScreenState extends State<ReadingFormScreen> {
   final alternativeTitlesController = TextEditingController();
   ReadingType type = ReadingType.manga;
   ReadingStatus status = ReadingStatus.inProgress;
+  double? score;
 
   @override
   void dispose() {
@@ -111,6 +113,16 @@ class _ReadingFormScreenState extends State<ReadingFormScreen> {
               value: status,
               options: _statusOptions,
               onChanged: (value) => setState(() => status = value),
+            ),
+            const SizedBox(height: AppSpacing.medium),
+            Text(
+              AppStrings.score,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            const SizedBox(height: AppSpacing.small),
+            AppScoreSelector(
+              value: score,
+              onChanged: (value) => setState(() => score = value),
             ),
             const SizedBox(height: AppSpacing.medium),
             AppTextField(

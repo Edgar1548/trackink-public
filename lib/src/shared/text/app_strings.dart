@@ -14,6 +14,7 @@ abstract final class AppStrings {
   static const title = 'Title';
   static const author = 'Author';
   static const progress = 'Progress';
+  static const score = 'Score';
   static const tags = 'Tags';
   static const tagsHint = 'Separate tags with commas';
   static const description = 'Description';
