@@ -19,6 +19,15 @@ abstract final class AppStrings {
   static const description = 'Description';
   static const alternativeTitles = 'Alternative titles';
   static const alternativeTitlesHint = 'Separate titles with commas';
+  static const readingType = 'Reading type';
+  static const status = 'Status';
+  static const typeManga = 'Manga';
+  static const typeManhwa = 'Manhwa';
+  static const typeManhua = 'Manhua';
+  static const typeTvSeries = 'TV series';
+  static const typeMovie = 'Movie';
+  static const typeBook = 'Book';
+  static const typeComic = 'Comic';
   static const loading = 'Loading';
   static const statusInProgress = 'Reading';
   static const statusCompleted = 'Completed';

@@ -3,7 +3,37 @@ import 'package:flutter/services.dart';
 
 import '../../../../shared/text/app_strings.dart';
 import '../../../../shared/theme/app_tokens.dart';
+import '../../../../shared/widgets/app_option_selector.dart';
 import '../../../../shared/widgets/app_text_field.dart';
+import '../../domain/entities/reading.dart';
+
+const _typeOptions = [
+  AppOption(label: AppStrings.typeManga, value: ReadingType.manga),
+  AppOption(label: AppStrings.typeManhwa, value: ReadingType.manhwa),
+  AppOption(label: AppStrings.typeManhua, value: ReadingType.manhua),
+  AppOption(label: AppStrings.typeTvSeries, value: ReadingType.tvSeries),
+  AppOption(label: AppStrings.typeMovie, value: ReadingType.movie),
+  AppOption(label: AppStrings.typeBook, value: ReadingType.book),
+  AppOption(label: AppStrings.typeComic, value: ReadingType.comic),
+];
+
+const _statusOptions = [
+  AppOption(
+    label: AppStrings.statusInProgress,
+    value: ReadingStatus.inProgress,
+  ),
+  AppOption(
+    label: AppStrings.statusCompleted,
+    value: ReadingStatus.completed,
+  ),
+  AppOption(label: AppStrings.statusHiatus, value: ReadingStatus.hiatus),
+  AppOption(
+    label: AppStrings.statusNoTranslation,
+    value: ReadingStatus.noTranslation,
+  ),
+  AppOption(label: AppStrings.statusDropped, value: ReadingStatus.dropped),
+  AppOption(label: AppStrings.statusPlanned, value: ReadingStatus.planned),
+];
 
 class ReadingFormScreen extends StatefulWidget {
   const ReadingFormScreen({super.key});
@@ -21,6 +51,8 @@ class _ReadingFormScreenState extends State<ReadingFormScreen> {
   final tagsController = TextEditingController();
   final descriptionController = TextEditingController();
   final alternativeTitlesController = TextEditingController();
+  ReadingType type = ReadingType.manga;
+  ReadingStatus status = ReadingStatus.inProgress;
 
   @override
   void dispose() {
@@ -57,6 +89,28 @@ class _ReadingFormScreenState extends State<ReadingFormScreen> {
               label: AppStrings.progress,
               keyboardType: TextInputType.number,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            ),
+            const SizedBox(height: AppSpacing.medium),
+            Text(
+              AppStrings.readingType,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            const SizedBox(height: AppSpacing.small),
+            AppOptionSelector<ReadingType>(
+              value: type,
+              options: _typeOptions,
+              onChanged: (value) => setState(() => type = value),
+            ),
+            const SizedBox(height: AppSpacing.medium),
+            Text(
+              AppStrings.status,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            const SizedBox(height: AppSpacing.small),
+            AppOptionSelector<ReadingStatus>(
+              value: status,
+              options: _statusOptions,
+              onChanged: (value) => setState(() => status = value),
             ),
             const SizedBox(height: AppSpacing.medium),
             AppTextField(
