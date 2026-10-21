@@ -15,6 +15,8 @@ abstract final class AppStrings {
   static const author = 'Author';
   static const progress = 'Progress';
   static const score = 'Score';
+  static const requiredField = 'This field is required.';
+  static const invalidNumber = 'Enter a valid non-negative number.';
   static const tags = 'Tags';
   static const tagsHint = 'Separate tags with commas';
   static const description = 'Description';

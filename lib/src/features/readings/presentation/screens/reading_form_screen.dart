@@ -49,6 +49,7 @@ class ReadingFormScreen extends StatefulWidget {
 }
 
 class _ReadingFormScreenState extends State<ReadingFormScreen> {
+  final formKey = GlobalKey<FormState>();
   late final ReadingFormViewModel viewModel;
   late final bool ownsViewModel;
 
@@ -77,18 +78,22 @@ class _ReadingFormScreenState extends State<ReadingFormScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text(AppStrings.createReading)),
       body: SafeArea(
-        child: ListView(
-          key: ReadingFormScreen.contentKey,
-          padding: const EdgeInsets.all(AppSpacing.large),
-          children: [
+        child: Form(
+          key: formKey,
+          child: ListView(
+            key: ReadingFormScreen.contentKey,
+            padding: const EdgeInsets.all(AppSpacing.large),
+            children: [
             AppTextField(
               controller: viewModel.titleController,
               label: AppStrings.title,
+              validator: viewModel.validateRequired,
             ),
             const SizedBox(height: AppSpacing.medium),
             AppTextField(
               controller: viewModel.authorController,
               label: AppStrings.author,
+              validator: viewModel.validateRequired,
             ),
             const SizedBox(height: AppSpacing.medium),
             AppTextField(
@@ -96,6 +101,7 @@ class _ReadingFormScreenState extends State<ReadingFormScreen> {
               label: AppStrings.progress,
               keyboardType: TextInputType.number,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              validator: viewModel.validateProgress,
             ),
             const SizedBox(height: AppSpacing.medium),
             Text(
@@ -148,7 +154,8 @@ class _ReadingFormScreenState extends State<ReadingFormScreen> {
               label: AppStrings.alternativeTitles,
               hint: AppStrings.alternativeTitlesHint,
             ),
-          ],
+            ],
+          ),
         ),
       ),
     );

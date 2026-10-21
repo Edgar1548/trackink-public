@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../shared/text/app_strings.dart';
 import '../../domain/entities/reading.dart';
 
 final class ReadingFormViewModel extends ChangeNotifier {
@@ -19,6 +20,24 @@ final class ReadingFormViewModel extends ChangeNotifier {
   ReadingType get type => _type;
   ReadingStatus get status => _status;
   double? get score => _score;
+
+  String? validateRequired(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return AppStrings.requiredField;
+    }
+    return null;
+  }
+
+  String? validateProgress(String? value) {
+    final normalized = value?.trim() ?? '';
+    if (normalized.isEmpty) return null;
+
+    final progress = int.tryParse(normalized);
+    if (progress == null || progress < 0) {
+      return AppStrings.invalidNumber;
+    }
+    return null;
+  }
 
   void setType(ReadingType value) {
     if (_type == value) return;
