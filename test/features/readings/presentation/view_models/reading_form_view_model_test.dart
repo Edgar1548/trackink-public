@@ -5,6 +5,7 @@ import 'package:trackink/src/features/readings/domain/repositories/reading_creat
 import 'package:trackink/src/features/readings/domain/use_cases/create_reading.dart';
 import 'package:trackink/src/features/readings/presentation/view_models/reading_form_view_model.dart';
 import 'package:trackink/src/shared/text/app_strings.dart';
+import 'dart:async';
 
 void main() {
   test('starts with the defaults for a new reading', () {
@@ -73,6 +74,23 @@ void main() {
     expect(draft.status, ReadingStatus.completed);
     expect(draft.score, 4.5);
   });
+
+  test('blocks concurrent saves until creation finishes', () async {
+    final creator = _PendingReadingCreator();
+    final viewModel = ReadingFormViewModel(CreateReading(creator));
+    addTearDown(viewModel.dispose);
+
+    final firstSave = viewModel.save();
+
+    expect(viewModel.isSaving, isTrue);
+    expect(await viewModel.save(), isNull);
+    expect(creator.calls, 1);
+
+    creator.complete();
+    await firstSave;
+
+    expect(viewModel.isSaving, isFalse);
+  });
 }
 
 final class _FakeReadingCreator implements ReadingCreator {
@@ -95,6 +113,37 @@ final class _FakeReadingCreator implements ReadingCreator {
       alternativeTitles: draft.alternativeTitles,
       createdAt: now,
       updatedAt: now,
+    );
+  }
+}
+
+
+final class _PendingReadingCreator implements ReadingCreator {
+  final request = Completer<Reading>();
+  int calls = 0;
+
+  @override
+  Future<Reading> create(ReadingDraft draft) {
+    calls++;
+    return request.future;
+  }
+
+  void complete() {
+    final now = DateTime.utc(2026, 1, 1);
+    request.complete(
+      Reading(
+        id: 'reading-1',
+        title: '',
+        author: '',
+        type: ReadingType.manga,
+        status: ReadingStatus.inProgress,
+        progress: 0,
+        tags: const [],
+        description: '',
+        alternativeTitles: const [],
+        createdAt: now,
+        updatedAt: now,
+      ),
     );
   }
 }

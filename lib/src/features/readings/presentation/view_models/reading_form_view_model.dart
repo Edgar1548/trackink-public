@@ -20,10 +20,12 @@ final class ReadingFormViewModel extends ChangeNotifier {
   ReadingType _type = ReadingType.manga;
   ReadingStatus _status = ReadingStatus.inProgress;
   double? _score;
+  bool _isSaving = false;
 
   ReadingType get type => _type;
   ReadingStatus get status => _status;
   double? get score => _score;
+  bool get isSaving => _isSaving;
 
   String? validateRequired(String? value) {
     if (value == null || value.trim().isEmpty) {
@@ -62,24 +64,34 @@ final class ReadingFormViewModel extends ChangeNotifier {
   }
 
   Future<Reading?> save() async {
+    if (_isSaving) return null;
+
     final createReading = _createReading;
     if (createReading == null) return null;
 
-    return createReading(
-      ReadingDraft(
-        title: titleController.text.trim(),
-        author: authorController.text.trim(),
-        type: type,
-        status: status,
-        progress: int.tryParse(progressController.text.trim()) ?? 0,
-        score: score,
-        tags: _commaSeparatedValues(tagsController.text),
-        description: descriptionController.text.trim(),
-        alternativeTitles: _commaSeparatedValues(
-          alternativeTitlesController.text,
+    _isSaving = true;
+    notifyListeners();
+
+    try {
+      return await createReading(
+        ReadingDraft(
+          title: titleController.text.trim(),
+          author: authorController.text.trim(),
+          type: type,
+          status: status,
+          progress: int.tryParse(progressController.text.trim()) ?? 0,
+          score: score,
+          tags: _commaSeparatedValues(tagsController.text),
+          description: descriptionController.text.trim(),
+          alternativeTitles: _commaSeparatedValues(
+            alternativeTitlesController.text,
+          ),
         ),
-      ),
-    );
+      );
+    } finally {
+      _isSaving = false;
+      notifyListeners();
+    }
   }
 
   List<String> _commaSeparatedValues(String value) {

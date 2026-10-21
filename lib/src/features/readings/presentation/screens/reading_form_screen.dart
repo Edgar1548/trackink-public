@@ -160,8 +160,12 @@ class _ReadingFormScreenState extends State<ReadingFormScreen> {
             const SizedBox(height: AppSpacing.large),
             FilledButton(
               key: ReadingFormScreen.saveButtonKey,
-              onPressed: _save,
-              child: const Text(AppStrings.saveReading),
+              onPressed: viewModel.isSaving ? null : _save,
+              child: Text(
+                viewModel.isSaving
+                    ? AppStrings.savingReading
+                    : AppStrings.saveReading,
+              ),
             ),
             ],
           ),
