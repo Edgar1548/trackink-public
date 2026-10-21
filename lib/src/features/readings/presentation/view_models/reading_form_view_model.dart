@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 
 import '../../../../shared/text/app_strings.dart';
 import '../../domain/entities/reading.dart';
+import '../../domain/entities/reading_draft.dart';
+import '../../domain/use_cases/create_reading.dart';
 
 final class ReadingFormViewModel extends ChangeNotifier {
-  ReadingFormViewModel();
+  ReadingFormViewModel([this._createReading]);
+
+  final CreateReading? _createReading;
 
   final titleController = TextEditingController();
   final authorController = TextEditingController();
@@ -55,6 +59,35 @@ final class ReadingFormViewModel extends ChangeNotifier {
     if (_score == value) return;
     _score = value;
     notifyListeners();
+  }
+
+  Future<Reading?> save() async {
+    final createReading = _createReading;
+    if (createReading == null) return null;
+
+    return createReading(
+      ReadingDraft(
+        title: titleController.text.trim(),
+        author: authorController.text.trim(),
+        type: type,
+        status: status,
+        progress: int.tryParse(progressController.text.trim()) ?? 0,
+        score: score,
+        tags: _commaSeparatedValues(tagsController.text),
+        description: descriptionController.text.trim(),
+        alternativeTitles: _commaSeparatedValues(
+          alternativeTitlesController.text,
+        ),
+      ),
+    );
+  }
+
+  List<String> _commaSeparatedValues(String value) {
+    return value
+        .split(',')
+        .map((item) => item.trim())
+        .where((item) => item.isNotEmpty)
+        .toList(growable: false);
   }
 
   @override

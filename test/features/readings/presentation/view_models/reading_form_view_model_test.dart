@@ -1,5 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:trackink/src/features/readings/domain/entities/reading.dart';
+import 'package:trackink/src/features/readings/domain/entities/reading_draft.dart';
+import 'package:trackink/src/features/readings/domain/repositories/reading_creator.dart';
+import 'package:trackink/src/features/readings/domain/use_cases/create_reading.dart';
 import 'package:trackink/src/features/readings/presentation/view_models/reading_form_view_model.dart';
 import 'package:trackink/src/shared/text/app_strings.dart';
 
@@ -43,4 +46,55 @@ void main() {
     expect(viewModel.validateProgress('-1'), AppStrings.invalidNumber);
     expect(viewModel.validateProgress('unknown'), AppStrings.invalidNumber);
   });
+
+  test('creates a reading draft from the form values', () async {
+    final creator = _FakeReadingCreator();
+    final viewModel = ReadingFormViewModel(CreateReading(creator));
+    addTearDown(viewModel.dispose);
+    viewModel.titleController.text = '  Title  ';
+    viewModel.authorController.text = '  Author  ';
+    viewModel.progressController.text = '12';
+    viewModel.tagsController.text = 'action, fantasy, action';
+    viewModel.descriptionController.text = '  Description  ';
+    viewModel.alternativeTitlesController.text = 'Alt one, Alt two';
+    viewModel.setType(ReadingType.book);
+    viewModel.setStatus(ReadingStatus.completed);
+    viewModel.setScore(4.5);
+
+    await viewModel.save();
+
+    final draft = creator.receivedDraft!;
+    expect(draft.title, 'Title');
+    expect(draft.author, 'Author');
+    expect(draft.progress, 12);
+    expect(draft.tags, ['action', 'fantasy', 'action']);
+    expect(draft.alternativeTitles, ['Alt one', 'Alt two']);
+    expect(draft.type, ReadingType.book);
+    expect(draft.status, ReadingStatus.completed);
+    expect(draft.score, 4.5);
+  });
+}
+
+final class _FakeReadingCreator implements ReadingCreator {
+  ReadingDraft? receivedDraft;
+
+  @override
+  Future<Reading> create(ReadingDraft draft) async {
+    receivedDraft = draft;
+    final now = DateTime.utc(2026, 1, 1);
+    return Reading(
+      id: 'reading-1',
+      title: draft.title,
+      author: draft.author,
+      type: draft.type,
+      status: draft.status,
+      progress: draft.progress,
+      score: draft.score,
+      tags: draft.tags,
+      description: draft.description,
+      alternativeTitles: draft.alternativeTitles,
+      createdAt: now,
+      updatedAt: now,
+    );
+  }
 }

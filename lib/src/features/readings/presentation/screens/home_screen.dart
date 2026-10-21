@@ -5,6 +5,7 @@ import '../../../../shared/theme/app_tokens.dart';
 import '../../../../shared/widgets/app_error_view.dart';
 import '../../../../shared/widgets/app_loading_indicator.dart';
 import '../../../../core/state/async_state.dart';
+import '../../domain/use_cases/create_reading.dart';
 import '../view_models/home_view_model.dart';
 import '../widgets/reading_card.dart';
 import '../widgets/reading_empty_state.dart';
@@ -15,9 +16,14 @@ const _loadMoreThreshold = 160.0;
 const _loadMoreIndicatorKey = Key('home-load-more-indicator');
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key, required this.viewModel});
+  const HomeScreen({
+    super.key,
+    required this.viewModel,
+    this.createReading,
+  });
 
   final HomeViewModel viewModel;
+  final CreateReading? createReading;
 
   static const contentKey = Key('home-content');
   static const createButtonKey = Key('create-reading-button');
@@ -88,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _openCreateReading() {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
-        builder: (_) => const ReadingFormScreen(),
+        builder: (_) => ReadingFormScreen(createReading: widget.createReading),
       ),
     );
   }

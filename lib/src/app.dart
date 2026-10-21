@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'features/readings/data/local/daos/reading_dao.dart';
 import 'features/readings/data/local/database/app_database.dart';
 import 'features/readings/data/repositories/local_reading_repository.dart';
+import 'features/readings/domain/use_cases/create_reading.dart';
 import 'features/readings/presentation/screens/home_screen.dart';
 import 'features/readings/presentation/view_models/home_view_model.dart';
 import 'shared/text/app_strings.dart';
@@ -22,6 +23,7 @@ class TrackInkApp extends StatefulWidget {
 class _TrackInkAppState extends State<TrackInkApp> {
   AppDatabase? _database;
   late final HomeViewModel _homeViewModel;
+  CreateReading? _createReading;
   late final bool _ownsHomeViewModel;
 
   @override
@@ -37,9 +39,9 @@ class _TrackInkAppState extends State<TrackInkApp> {
     _ownsHomeViewModel = true;
     final database = AppDatabase.defaults();
     _database = database;
-    _homeViewModel = HomeViewModel(
-      LocalReadingRepository(ReadingDao(database)),
-    );
+    final repository = LocalReadingRepository(ReadingDao(database));
+    _homeViewModel = HomeViewModel(repository);
+    _createReading = CreateReading(repository);
   }
 
   @override
@@ -58,7 +60,10 @@ class _TrackInkAppState extends State<TrackInkApp> {
       debugShowCheckedModeBanner: false,
       title: AppStrings.appName,
       theme: AppTheme.light,
-      home: HomeScreen(viewModel: _homeViewModel),
+      home: HomeScreen(
+        viewModel: _homeViewModel,
+        createReading: _createReading,
+      ),
     );
   }
 }

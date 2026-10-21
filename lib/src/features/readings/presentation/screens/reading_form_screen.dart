@@ -7,6 +7,7 @@ import '../../../../shared/widgets/app_option_selector.dart';
 import '../../../../shared/widgets/app_score_selector.dart';
 import '../../../../shared/widgets/app_text_field.dart';
 import '../../domain/entities/reading.dart';
+import '../../domain/use_cases/create_reading.dart';
 import '../view_models/reading_form_view_model.dart';
 
 const _typeOptions = [
@@ -38,11 +39,13 @@ const _statusOptions = [
 ];
 
 class ReadingFormScreen extends StatefulWidget {
-  const ReadingFormScreen({super.key, this.viewModel});
+  const ReadingFormScreen({super.key, this.viewModel, this.createReading});
 
   final ReadingFormViewModel? viewModel;
+  final CreateReading? createReading;
 
   static const contentKey = Key('reading-form-content');
+  static const saveButtonKey = Key('save-reading-button');
 
   @override
   State<ReadingFormScreen> createState() => _ReadingFormScreenState();
@@ -57,7 +60,7 @@ class _ReadingFormScreenState extends State<ReadingFormScreen> {
   void initState() {
     super.initState();
     final injected = widget.viewModel;
-    viewModel = injected ?? ReadingFormViewModel();
+    viewModel = injected ?? ReadingFormViewModel(widget.createReading);
     ownsViewModel = injected == null;
     viewModel.addListener(_onViewModelChanged);
   }
@@ -154,10 +157,21 @@ class _ReadingFormScreenState extends State<ReadingFormScreen> {
               label: AppStrings.alternativeTitles,
               hint: AppStrings.alternativeTitlesHint,
             ),
+            const SizedBox(height: AppSpacing.large),
+            FilledButton(
+              key: ReadingFormScreen.saveButtonKey,
+              onPressed: _save,
+              child: const Text(AppStrings.saveReading),
+            ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  Future<void> _save() async {
+    if (!(formKey.currentState?.validate() ?? false)) return;
+    await viewModel.save();
   }
 }
