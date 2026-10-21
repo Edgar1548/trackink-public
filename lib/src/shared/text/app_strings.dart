@@ -11,6 +11,10 @@ abstract final class AppStrings {
   static const retry = 'Retry';
   static const addReading = 'Add reading';
   static const createReading = 'New reading';
+  static const saveReading = 'Save reading';
+  static const savingReading = 'Saving reading';
+  static const readingCreated = 'Reading created successfully.';
+  static const createReadingError = 'Could not create the reading.';
   static const title = 'Title';
   static const author = 'Author';
   static const progress = 'Progress';
