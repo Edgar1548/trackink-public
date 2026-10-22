@@ -93,7 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _openCreateReading() {
     Navigator.of(context).push(
-      MaterialPageRoute<void>(
+      MaterialPageRoute<bool>(
         builder: (_) => ReadingFormScreen(createReading: widget.createReading),
       ),
     );

@@ -5,6 +5,7 @@ import '../../../../shared/text/app_strings.dart';
 import '../../../../shared/theme/app_tokens.dart';
 import '../../../../shared/widgets/app_option_selector.dart';
 import '../../../../shared/widgets/app_score_selector.dart';
+import '../../../../shared/widgets/app_snack_bar.dart';
 import '../../../../shared/widgets/app_text_field.dart';
 import '../../domain/entities/reading.dart';
 import '../../domain/use_cases/create_reading.dart';
@@ -176,6 +177,34 @@ class _ReadingFormScreenState extends State<ReadingFormScreen> {
 
   Future<void> _save() async {
     if (!(formKey.currentState?.validate() ?? false)) return;
-    await viewModel.save();
+
+    try {
+      final created = await viewModel.save();
+      if (!mounted) return;
+      if (created == null) {
+        _showCreateError();
+        return;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        appSnackBar(
+          title: AppStrings.saved,
+          message: AppStrings.readingCreated,
+        ),
+      );
+      Navigator.of(context).pop(true);
+    } catch (_) {
+      if (mounted) _showCreateError();
+    }
+  }
+
+  void _showCreateError() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      appSnackBar(
+        title: AppStrings.error,
+        message: AppStrings.createReadingError,
+        type: AppSnackBarType.error,
+      ),
+    );
   }
 }

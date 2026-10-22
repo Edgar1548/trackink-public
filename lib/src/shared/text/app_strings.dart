@@ -13,6 +13,8 @@ abstract final class AppStrings {
   static const createReading = 'New reading';
   static const saveReading = 'Save reading';
   static const savingReading = 'Saving reading';
+  static const saved = 'Saved';
+  static const error = 'Error';
   static const readingCreated = 'Reading created successfully.';
   static const createReadingError = 'Could not create the reading.';
   static const title = 'Title';
