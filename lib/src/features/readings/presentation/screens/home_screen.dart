@@ -91,12 +91,14 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _openCreateReading() {
-    Navigator.of(context).push(
+  Future<void> _openCreateReading() async {
+    final created = await Navigator.of(context).push<bool>(
       MaterialPageRoute<bool>(
         builder: (_) => ReadingFormScreen(createReading: widget.createReading),
       ),
     );
+
+    if (created == true) await widget.viewModel.loadInitial();
   }
 
   Widget _contentFor(AsyncState<HomeData> state) {

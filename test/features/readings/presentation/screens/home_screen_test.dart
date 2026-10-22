@@ -25,7 +25,8 @@ void main() {
   });
 
   testWidgets('opens the create-reading form route', (tester) async {
-    final viewModel = HomeViewModel(_EmptyReadingRepository());
+    final repository = _EmptyReadingRepository();
+    final viewModel = HomeViewModel(repository);
     addTearDown(viewModel.dispose);
 
     await tester.pumpWidget(MaterialApp(home: HomeScreen(viewModel: viewModel)));
@@ -37,12 +38,24 @@ void main() {
     expect(find.byType(ReadingFormScreen), findsOneWidget);
     expect(find.text(AppStrings.createReading), findsOneWidget);
     expect(find.byKey(ReadingFormScreen.contentKey), findsOneWidget);
+
+    Navigator.of(
+      tester.element(find.byType(ReadingFormScreen)),
+    ).pop(true);
+    await tester.pumpAndSettle();
+
+    expect(repository.firstPageCalls, 2);
   });
 }
 
 final class _EmptyReadingRepository implements ReadingRepository {
+  int firstPageCalls = 0;
+
   @override
-  Future<List<Reading>> getFirstPage({required int limit}) async => const [];
+  Future<List<Reading>> getFirstPage({required int limit}) async {
+    firstPageCalls++;
+    return const [];
+  }
 
   @override
   Future<List<Reading>> getNextPage({
